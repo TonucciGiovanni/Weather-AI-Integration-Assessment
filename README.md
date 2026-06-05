@@ -2,7 +2,6 @@
 
 This repository contains the Weather-AI Integration Assessment project.
 
-> README placeholder. Update this file later with project details, setup instructions, and usage information.
 
 ## Project
 
