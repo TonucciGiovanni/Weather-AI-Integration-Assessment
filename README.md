@@ -12,4 +12,3 @@ Weather-AI Integration Assessment is a React + Vite application for evaluating w
 
 - Repository initialized locally
 - README placeholder created
-- No remote GitHub repository has been created yet due to missing GitHub authentication
