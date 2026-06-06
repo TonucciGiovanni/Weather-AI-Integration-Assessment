@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react'
 import { analyzeTrees } from '../api'
-import styles from './Trees.module.css'
+import styles from './ForestryTab.module.css'
 
-export default function Trees({ apiKey }) {
-      const [file, setFile] = useState(null)
+export default function ForestryTab({ apiKey }) {
+  const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
   const [dragging, setDragging] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -11,7 +11,7 @@ export default function Trees({ apiKey }) {
   const [result, setResult] = useState(null)
   const [showOverlay, setShowOverlay] = useState(false)
 
-  const [farmerId, setFarmerId] = useState('')
+  const [siteId, setSiteId] = useState('')
   const [county, setCounty] = useState('')
   const [acres, setAcres] = useState('')
   const [notes, setNotes] = useState('')
@@ -37,15 +37,15 @@ export default function Trees({ apiKey }) {
 
   async function handleAnalyze() {
     if (!apiKey) { setError('Enter a valid API key (starts with wai_) at the top.'); return }
-    if (!file) { setError('Please select a Tree image first.'); return }
+    if (!file) { setError('Please select an image first.'); return }
     setError(null)
     setLoading(true)
     setResult(null)
     try {
-      const data = await analyzeTrees(apiKey, file, { farmerId, county, acres, notes })
+      const data = await analyzeTrees(apiKey, file, { siteId, county, acres, notes })
       setResult(data)
     } catch (e) {
-      setError(e.message || 'Analysis failed. Check your API key and Tree image.')
+      setError(e.message || 'Analysis failed. Check your key and image.')
     }
     setLoading(false)
   }
@@ -67,14 +67,14 @@ export default function Trees({ apiKey }) {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.sectionLabel}>Optional metadata</div>
+      <div className={styles.sectionLabel}>Additional Data (Optional)</div>
       <div className={styles.formRow}>
-        <input className={styles.formInput} value={farmerId} onChange={e => setFarmerId(e.target.value)} placeholder="Farmer ID" />
+        <input className={styles.formInput} value={siteId} onChange={e => setSiteId(e.target.value)} placeholder="Site ID (optional)" />
         <input className={styles.formInput} value={county} onChange={e => setCounty(e.target.value)} placeholder="County / region" />
       </div>
       <div className={styles.formRow}>
-        <input className={styles.formInput} value={acres} onChange={e => setAcres(e.target.value)} placeholder="Land acres" type="number" step="0.1" />
-        <input className={styles.formInput} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes (e.g. Forest trees)" />
+        <input className={styles.formInput} value={acres} onChange={e => setAcres(e.target.value)} placeholder="Area (ha)" type="number" step="0.1" />
+        <input className={styles.formInput} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes (e.g. montane forest)" />
       </div>
 
       {!preview && (
@@ -88,7 +88,7 @@ export default function Trees({ apiKey }) {
           <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" style={{ display: 'none' }} onChange={e => handleFile(e.target.files[0])} />
           <div className={styles.uploadIcon}>🛰️</div>
           <div className={styles.uploadLabel}>
-            <strong>Insert a Tree image here</strong><br />
+            <strong>Drop a forest or tree cover image here</strong><br />
             Drone · Aerial · Satellite<br />
             JPEG · PNG · WEBP · max 20 MB
           </div>
@@ -100,7 +100,7 @@ export default function Trees({ apiKey }) {
           <div className={styles.imageWrap}>
             <img
               src={showOverlay && r?.overlay_image_url ? r.overlay_image_url : preview}
-              alt="Farm image"
+              alt="Forest image"
               className={styles.previewImg}
             />
             {r?.overlay_image_url && (

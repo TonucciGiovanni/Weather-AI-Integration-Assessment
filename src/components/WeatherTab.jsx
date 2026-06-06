@@ -1,74 +1,74 @@
 import { useState } from 'react'
 import { geocodeCity, fetchWeather, weatherIcons } from '../api'
-import styles from './Weather.module.css'
+import styles from './WeatherTab.module.css'
 
-export default function Weather({ apiKey }) {
-    const [query, setQuery] = useState('')
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const [data, setData] = useState(null)
-    const [meta, setMeta] = useState(null)
+export default function WeatherTab({ apiKey }) {
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [data, setData] = useState(null)
+  const [meta, setMeta] = useState(null)
 
-    async function handleSearch() {
-        if (!apiKey) { setError('Enter a valid API key (starts with wai_) at the top.'); return }
-        if (!query.trim()) { setError('Enter a city name.'); return }
-        setError(null)
-        setLoading(true)
-        setData(null)
-        try {
-            const geo = await geocodeCity(query.trim())
-            const weather = await fetchWeather(apiKey, geo.lat, geo.lon)
-            setMeta(geo)
-            setData(weather)
-        } catch (e) {
-            setError(e.message || 'Request failed. Check your API key and try again.')
-        }
-        setLoading(false)
+  async function handleSearch() {
+    if (!apiKey) { setError('Enter a valid API key (starts with wai_) at the top.'); return }
+    if (!query.trim()) { setError('Enter a city name.'); return }
+    setError(null)
+    setLoading(true)
+    setData(null)
+    try {
+      const geo = await geocodeCity(query.trim())
+      const weather = await fetchWeather(apiKey, geo.lat, geo.lon)
+      setMeta(geo)
+      setData(weather)
+    } catch (e) {
+      setError(e.message || 'Request failed. Check your API key and try again.')
     }
-    
-    const cur = data?.current || data?.current_weather || {}
-    const daily = data?.daily || data?.forecast || data?.forecast_days || []
-    const aiSummary = data?.ai_summary || data?.summary || data?.ai || ''
+    setLoading(false)
+  }
 
-    const temp = cur.temp !== undefined ? Math.round(cur.temp) : cur.temperature !== undefined ? Math.round(cur.temperature) : null
-    const feels = cur.feels_like !== undefined ? Math.round(cur.feels_like) : null
-    const humidity = cur.humidity ?? null
-    const wind = cur.wind_speed !== undefined ? Math.round(cur.wind_speed) : cur.windspeed !== undefined ? Math.round(cur.windspeed) : null
-    const uv = cur.uvi ?? cur.uv_index ?? null
-    const vis = cur.visibility !== undefined ? (cur.visibility / 1000).toFixed(1) : null
-    const desc = cur.weather?.[0]?.description || cur.condition || cur.description || ''
-    const code = cur.weather?.[0]?.id || cur.weathercode || ''
+  const cur = data?.current || data?.current_weather || {}
+  const daily = data?.daily || data?.forecast || data?.forecast_days || []
+  const aiSummary = data?.ai_summary || data?.summary || data?.ai || ''
 
-    const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-    
-    return (
+  const temp = cur.temp !== undefined ? Math.round(cur.temp) : cur.temperature !== undefined ? Math.round(cur.temperature) : null
+  const feels = cur.feels_like !== undefined ? Math.round(cur.feels_like) : null
+  const humidity = cur.humidity ?? null
+  const wind = cur.wind_speed !== undefined ? Math.round(cur.wind_speed) : cur.windspeed !== undefined ? Math.round(cur.windspeed) : null
+  const uv = cur.uvi ?? cur.uv_index ?? null
+  const vis = cur.visibility !== undefined ? (cur.visibility / 1000).toFixed(1) : null
+  const desc = cur.weather?.[0]?.description || cur.condition || cur.description || ''
+  const code = cur.weather?.[0]?.id || cur.weathercode || ''
+
+  const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+  return (
     <div className={styles.wrap}>
-        <div className={styles.searchRow}>
-            <input
-            className={styles.input}
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="City name, e.g. Nairobi" />
-            <button className={styles.btn} onClick={handleSearch}
-            disabled={loading}> {loading ? '...' : 'Search'}
-            </button>
+      <div className={styles.searchRow}>
+        <input
+          className={styles.input}
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          placeholder="City name, e.g. Nairobi"
+        />
+        <button className={styles.btn} onClick={handleSearch} disabled={loading}>
+          {loading ? '...' : 'Search'}
+        </button>
       </div>
 
       {error && <div className={styles.error}>⚠ {error}</div>}
 
       {loading && (
         <div className={styles.loading}>
-            <div className={styles.spinner} />
-            <span className={styles.loadingText}>Fetching weather data…
-            </span>
+          <div className={styles.spinner} />
+          <span className={styles.loadingText}>Fetching weather data…</span>
         </div>
       )}
 
       {!loading && !data && !error && (
         <div className={styles.empty}>
-            <div className={styles.emptyIcon}>🌍</div>
-            <p>Enter a city to pull live weather data with AI-powered insights.</p>
+          <div className={styles.emptyIcon}>🌍</div>
+          <p>Enter a city to pull live weather data with AI-powered insights.</p>
         </div>
       )}
 
@@ -76,15 +76,14 @@ export default function Weather({ apiKey }) {
         <>
           <div className={styles.mainCard}>
             <div className={styles.mainTop}>
-                <div>
-                    <div className={styles.cityName}>{meta.city}</div>
-                    <div className={styles.cityMeta}> 
-                        {meta.country} · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                    </div> 
-                    <div className={styles.condition}>{weatherIcons(code)} {desc}</div>
+              <div>
+                <div className={styles.cityName}>{meta.city}</div>
+                <div className={styles.cityMeta}>
+                  {meta.country} · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                 </div>
-
-              <div className={styles.tempBlock}> 
+                <div className={styles.condition}>{weatherIcons(code)} {desc}</div>
+              </div>
+              <div className={styles.tempBlock}>
                 <span className={styles.tempBig}>{temp ?? '—'}</span>
                 <span className={styles.tempUnit}>°C</span>
                 {feels !== null && <div className={styles.feelsLike}>Feels {feels}°</div>}
@@ -98,28 +97,24 @@ export default function Weather({ apiKey }) {
                   <div className={styles.statVal}>{humidity}<span>%</span></div>
                 </div>
               )}
-
               {wind !== null && (
                 <div className={styles.statBox}>
                   <div className={styles.statLabel}>Wind</div>
                   <div className={styles.statVal}>{wind}<span> m/s</span></div>
                 </div>
               )}
-
               {uv !== null && (
                 <div className={styles.statBox}>
                   <div className={styles.statLabel}>UV Index</div>
                   <div className={styles.statVal}>{uv}</div>
                 </div>
               )}
-
               {vis !== null && (
                 <div className={styles.statBox}>
                   <div className={styles.statLabel}>Visibility</div>
                   <div className={styles.statVal} style={{ fontSize: 14 }}>{vis} km</div>
                 </div>
               )}
-              
             </div>
           </div>
 
@@ -154,6 +149,6 @@ export default function Weather({ apiKey }) {
           )}
         </>
       )}
-        </div>
-    )
+    </div>
+  )
 }
