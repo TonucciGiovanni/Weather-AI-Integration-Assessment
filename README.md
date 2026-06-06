@@ -1,6 +1,6 @@
 # WeatherAI API INTERGRATION
 
-Live demo: https://your-project.vercel.app
+Live demo: https://weatherai-api-integration.vercel.app/
 
 I built this to explore the WeatherAI developer platform and see how their APIs work
 in practice. The goal was straightforward: pick a couple of endpoints, consume the
@@ -81,8 +81,6 @@ To deploy:
    command and output directory for you.
 
 4. Click Deploy. Vercel will build the project and give you a live URL.
-
-5. Copy that URL and replace the placeholder at the top of this README with it.
 
 The app does not require any environment variables to be set on Vercel. The API key
 is entered by the user at runtime directly in the app.
